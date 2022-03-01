@@ -4,7 +4,8 @@ import math
 
 
 def score(guess: str, secret: str) -> str:
-    """ returns the score comparing guess with secret where
+    """
+    returns the score comparing guess with secret where
     green = 2 when correct character appears in correct place
     orange = 1 where character is correct but in wrong place
     and grey = 0 where character does not appear (or appear again) in secret
