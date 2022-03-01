@@ -14,7 +14,7 @@ all rhs are crated using the python built-in eval() function, so rhs=eval(lhs)
 """
 
 
-def find_all_valid_sentences():
+def find_all_valid_sentences() -> list:
     """
     Creates all possible strings of length 4, 5 and 6 that will be on lhs of equation
     Of those 3,829,880 possible strings all but 17,723 are rejected by validate() function
@@ -61,7 +61,7 @@ pattern1 = re.compile("\d+[*+\-/]\d+")  # must have digits, operator, digits
 pattern_combined = re.compile("(.*[*+\-/]{2})|(.*[*+\-/]0)|(.*[*+\-/]$)")  # must not have these patterns
 
 
-def validate(lhs):
+def validate(lhs: str) -> bool:
     """
     Takes a proposed lhs of a nerdle sentence.
     Checks that it is a valid nerdle lhs and that it passes eval()
@@ -69,8 +69,9 @@ def validate(lhs):
     if eval() produces an integer result (or a float with decimal part = 0)
     and the total length of lhs plus the equals sign plus the rhs equals 8
     then the lhs is good and the function returns True, otherwise False
+    :return:
     :param lhs: a string to be validated as a potential lhs of a nerdle sentence
-    :return: True if lhs evals to an non-neg integer and length of "lhs=rhs" = 8
+    :return: True if lhs evals to a non-neg integer and length of "lhs=rhs" = 8
     otherwise False
     """
     if not bool(pattern1.match(lhs)):  # check for required "digits operator digits" pattern
@@ -96,7 +97,7 @@ def validate(lhs):
     return False
 
 
-def write_file(valid_sentences):
+def write_file(valid_sentences: list) -> int:
     with open(FILENAME, "w") as f:
         for sentence in valid_sentences:
             f.write(sentence + "\n")
@@ -107,7 +108,6 @@ def main():
     print(f'Creating all 17,723 valid nerdle sentences and writing to {FILENAME} Should take <20 seconds')
     tic = time.perf_counter()
     valid_sentences = find_all_valid_sentences()
-    write_file(valid_sentences)
     number_of_sentences = write_file(valid_sentences)
     toc = time.perf_counter()
     print(f'Wrote {number_of_sentences} in {round(toc - tic, 3)} seconds to {FILENAME}')
