@@ -5,7 +5,7 @@ FILENAME = "C:/Users/Joe_F/Downloads/all_valid_nerdle_sentences.txt"
 
 """
 This module will write all valid nerdle sentences to a file named FILENAME
-This takes about 15 seconds on a Windows 10 laptop with Intel Core i7
+This takes <20 seconds on a Windows 10 laptop with Intel Core i7
 
 A valid "sentence" is "lhs=rhs" of length 8 that is true and obeys all the other nerdle rules
 all lhs are created iteratively
