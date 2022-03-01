@@ -10,7 +10,7 @@ def score(guess: str, secret: str) -> str:
     and grey = 0 where character does not appear (or appear again) in secret
 
     score('abcb','bbcc') will return '0221'
-    score will be calculated in a list and converted to a string and returned
+    score will be calculated in a list, and converted to a string and returned
     """
     score = ['0'] * len(guess)
     matched_in_secret = [False] * len(guess)  # keep track of what's matched already to stop double counting

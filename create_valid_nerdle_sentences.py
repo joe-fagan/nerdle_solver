@@ -10,7 +10,6 @@ This takes <20 seconds on a Windows 10 laptop with Intel Core i7
 A valid "sentence" is "lhs=rhs" of length 8 that is true and obeys all the other nerdle rules
 all lhs are created iteratively
 all rhs are crated using the python built-in eval() function, so rhs=eval(lhs)
-
 """
 
 
