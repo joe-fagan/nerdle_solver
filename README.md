@@ -52,8 +52,9 @@ press y to accept or enter your own guess
 enter score (or y) -> 10112201
 Secret found       -> 6*6-2=34
 ```
+<img src="https://github.com/joe-fagan/nerdle_solver/blob/main/nerdle_2-March-2022.PNG" alt="drawing" width="200"/>
 
-![Nerdle Image](https://github.com/joe-fagan/nerdle_solver/blob/main/nerdle_2-March-2022.PNG)
+
 
 #### How does the solver work
 
