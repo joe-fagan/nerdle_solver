@@ -2,7 +2,6 @@
 import collections
 import math
 
-
 def score(guess: str, secret: str) -> str:
     """
     returns the score comparing guess with secret where

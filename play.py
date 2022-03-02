@@ -1,124 +1,8 @@
-import collections
-import math
-import re
-import time
-from functools import lru_cache
-import random
-
-FILENAME = "C:/Users/Joe_F/Downloads/all_valid_nerdle_sentences.txt"
-pattern1 = re.compile("\d+[*+\-/]\d+")  # must have digits, operator, digits
-# pat1 = re.compile(".*[*+\-/]{2}")   # must not have 2 adjacent operators
-# pat2 = re.compile(".*[*+\-/]0")     # must not have operator followed by zero
-# pat3 = re.compile(".*[*+\-/]$")     # must not end with an operator
-# for performance reasons, pat2 - pat4 are combined with pipe symbol
-pattern_combined = re.compile("(.*[*+\-/]{2})|(.*[*+\-/]0)|(.*[*+\-/]$)")
-
-def validate(lhs):
-    # if '+' not in lhs and '-' not in lhs and '/' not in lhs and '*' not in lhs or '**' in lhs:
-    #     # print(f'{sent} has no operator or has **')
-    #     return False
-    if not bool(pattern1.match(lhs)):  # check for required "digits operator digits" pattern
-        # print(f'failed at 1: {lhs} must contain digit, single operator, digit ')
-        return False
-    elif bool(pattern_combined.match(lhs)):
-        return False
-    else:
-        # try:
-        #     rhs = eval(lhs)
-        # except:
-        #     print(f'{lhs} failed eval()')
-        #     return False
-        rhs = eval(lhs)
-        if rhs < 0 or rhs != int(rhs):
-            return False
-        rhs = int(rhs)
-        if len(f'{lhs}={str(rhs)}') == 8:
-            # print(len(f'{str(lhs)}={str(rhs)}'))
-            # print(f'{sent}={res} ')
-            return True
-    # print('failed at 3')
-    return False
+import solver
+import create_valid_nerdle_sentences
 
 
-
-def find_all_valid_sentences():
-    dig_operators = '0123456789+-*/'
-    dig_no_zero = '123456789'
-    dig_with_zero = '0123456789'
-    valid_sentences = []
-    for first in dig_no_zero:
-        for second in dig_operators:
-            for third in dig_operators:
-                for fourth in dig_operators:
-                    lhs4 = first + second + third + fourth
-                    if validate(lhs4):
-                        valid_sentences.append(f'{lhs4}={int(eval(lhs4))}')
-                    for fifth in dig_operators:
-                        lhs5 = lhs4 + fifth
-                        if validate(lhs5):
-                            valid_sentences.append(f'{lhs5}={int(eval(lhs5))}')
-                        for sixth in dig_with_zero:
-                            lhs6 = lhs5 + sixth
-                            if validate(lhs6):
-                                valid_sentences.append(f'{lhs6}={int(eval(lhs6))}')
-    return valid_sentences
-
-
-
-
-
-def write_file():
-    valid_sentences = find_all_valid_sentences()
-
-    with open(FILENAME, "w") as f:
-        for sentence in valid_sentences:
-            f.write(sentence + "\n")
-
-    print(f'writing {len(valid_sentences)} to {FILENAME}')
-
-
-def score(guess, secret):
-    sco = ['0'] * len(guess)
-    matched_in_secret = [False] * len(guess)  # keep track of what's matched already to stop double counting
-    for g_ind, g in enumerate(guess):
-        for s_ind, s in enumerate(secret):
-            if g == s:
-                if not matched_in_secret[s_ind]:
-                    sco[g_ind] = '2' if g_ind == s_ind else '1'
-                    matched_in_secret[s_ind] = True
-                    break
-    score=''
-    return score.join(sco)
-
-
-def entropy(guess, possiblilities):
-    """for a given guess and a list of possibilities, calculate the entropy of that guess"""
-    l = []
-    for poss in possiblilities:
-        l.append(score(guess, poss))
-    # for i in range(len(l)):
-    #     print(l[i], possiblilities[i])
-    # using the collections module create a counter dict (sore: count)
-    # since I want only to calculate entropy for guess vs possibilities
-    # see https://stackoverflow.com/questions/2161752/how-to-count-the-frequency-of-the-elements-in-an-unordered-list
-    # for a great primer on collections.Counter()
-    counter = collections.Counter(l)
-    entropy = 0
-    denom = len(l)
-    for val in counter.values():
-        p = val / denom
-        x = -1 * p * math.log2(p)
-        entropy += x
-    if guess == '48-32=16':
-        print(f'counter is {counter}')
-        print(f'counter keys{counter.keys()}')
-        print(f'counter.values is {counter.values()}')
-        print(f'entropy is {entropy}')
-
-    return entropy
-
-
-def play():
+def play(all: list) -> None:
     """
     Plays the game
     FYI first guess has max entropy guess is 48-32=16 with entropy 9.77
@@ -150,19 +34,17 @@ def play():
             game_on = False
             continue
         if answe == 'y':
-            answe = score(guess, secret)
+            answe = solver.score(guess, secret)
             print(f'score              -> {answe}')
 
         for trial in trials:
-            if score(guess, trial) == answe:
+            if solver.score(guess, trial) == answe:
                 possible_secrets.append(trial)
 
         if len(possible_secrets) == 1:
             print(f'Secret found       -> {possible_secrets[0]}')
             game_on = False
             continue
-
-
 
         for element in possible_secrets:
             print(f'possible secret     -> {element}')
@@ -184,7 +66,7 @@ def play():
                 if deltat % 8000 == 0:
                     print('+')
 
-            e = entropy(x, all) # change possible_secrets to all to calculate 1st guess max entropy.
+            e = solver.entropy(x,possible_secrets)  # change possible_secrets to all to calculate.
             ent.append(e)
             if e > maxent:
                 maxent = e
@@ -197,7 +79,7 @@ def play():
         # maxent_p = 0
         # max_guess_p = ''
         # for x in possible_secrets:
-        #     e = entropy(x, possible_secrets)
+        #     e = solver.entropy(x, possible_secrets)
         #     ent_p.append(e)
         #     if e > maxent_p:
         #         maxent_p = e
@@ -219,6 +101,16 @@ def play():
         #     print(round(x,2))
 
 
+def main():
+    print(f'{create_valid_nerdle_sentences.FILENAME=}')
+    with open(create_valid_nerdle_sentences.FILENAME) as f:
+        all = [line.rstrip('\n') for line in f]
+    play(all)
+
+
+if __name__ == "__main__":
+    main()
+
 # uncomment to write possible answers to file
 # tic = time.perf_counter()
 # write_file()
@@ -226,13 +118,10 @@ def play():
 # print(f'took {round(toc - tic, 3)} seconds')
 
 
-with open(FILENAME) as f:
-    all = [line.rstrip('\n') for line in f]
-
 # sample = ['11-1-1=9', '48-32=16', '48-36=12', '12-35=47','12345=78']
 # for el in sample:
 #     print(f'{el} has entropy {entropy(el, all):.2f}')
-play()
+# play(all)
 # secret = 'babb-bab'
 # guess  = 'bbaabbba'
 # tic = time.perf_counter()
@@ -247,12 +136,11 @@ play()
 # print(f'score too took {round(toc - tic, 3)} seconds')
 
 
-
-secret = 'babb-bab'
-guess  = 'bbaabbba'
-print(f'{secret}')
-print(f'{ guess}')
-print(f"{score(guess, secret)}")
+# secret = 'babb-bab'
+# guess = 'bbaabbba'
+# print(f'{secret}')
+# print(f'{guess}')
+# print(f"{solver.score(guess, secret)}")
 
 # import time
 # import sys

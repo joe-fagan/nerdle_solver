@@ -44,6 +44,17 @@ Depending on the secret, the possible secrets after the max entropy guess above 
 secrets to 140. All possible secrets are shown and the next guess is suggested. You can either accept this guess 
 or enter your own guess.
 
+Here's an example running on today's nerdle (2nd March 2022)
+```
+try                -> 48-32=16
+press y to accept or enter your own guess
+                   -> y
+enter score (or y) -> 10112201
+Secret found       -> 6*6-2=34
+```
+
+![Test Image 1](nerdle_2-March-2022.png)
+
 #### How does the solver work
 
 
