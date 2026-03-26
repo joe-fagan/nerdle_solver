@@ -3,7 +3,7 @@
 If you know what it is, skip this section.
 
 If not here's a simple introduction.
-## Guess the celbrity with yes/no questions
+## Guess the celebrity with yes/no questions
 Image we're playing a game where you have to figure out which celebrity I've chosen from a shared list 
 of say 800 celebrities. You can ask only yes/no questions.
 
